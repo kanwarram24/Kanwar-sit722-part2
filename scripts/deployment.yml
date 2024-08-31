@@ -1,1 +1,37 @@
-# Write Kubernetes Deployment Script
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-catalog-deployment
+  labels:
+    app: book-catalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-catalog
+  template:
+    metadata:
+      labels:
+        app: book-catalog
+    spec:
+      containers:
+      - name: book-catalog-container
+        image: book-catalog
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 4002
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://kanwar_sit722_s223443054_j6xa_user:vTTcOtiwbukVYa4G250CVKZm5SDOR2IU@dpg-cr8s66aj1k6c73f85j60-a.oregon-postgres.render.com/kanwar_sit722_s223443054_j6xa"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-catalog-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 4002
+    targetPort: 4002
+  selector:
+    app: book-catalog
